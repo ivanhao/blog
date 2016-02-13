@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Ivan&#039;s Blog</title>
-	<meta name="keywords" content="samba,GitBlog,GitBlog,博客,Markdown博客,jockchou,Ivan&#039;s Blog">
-	<meta name="description" content="GitBlog是一个简单易用的Markdown博客系统">
+	<title>赚钱宝root后第三件事，安装python的百度云客户端-赚钱宝折腾|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="百度云,bypy,赚钱宝,赚钱宝折腾,Ivan&#039;s Blog">
+	<meta name="description" content="赚钱宝root后，安装python版的百度云客户端，实现百度云网盘的上传下载。">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -39,36 +39,62 @@
 	</div>
 </div>
 </header>		    <div id="content">
-					    	    	
-    	    		<div class="quest-row" id="title-container">
-	<div class="container title-container">
-		<div class="row">
-			<div class="col-md-6">
-								<h3>GitBlog</h3>
-							</div>
-			<div class="col-md-6">
-				<ul class="breadcrumbs">
-					<li><a href="/">Home</a></li>
-										<li>GitBlog</li>
-									</ul>
-				</div>
-		</div>
-	</div>
-</div>    		<div class="quest-row site-content">
+	<div class="quest-row site-content">
 		<div class="container">
 			<div class="row">
-				<div id="primary" class="content-area col-md-9">
+				<div id="primary" class="content-area single col-md-9">
 					<div id="main" class="site-main" role="main">
-																										        	<article class="post hentry">
+						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/entware-smb.html" rel="bookmark">赚钱宝root后第一件事，entware,samba-赚钱宝折腾</a></h1>
+	<h1 class="post-title"><a href="/blog/bypy.html" rel="bookmark">赚钱宝root后第三件事，安装python的百度云客户端-赚钱宝折腾</a></h1>
 	<div class="entry-meta">
-		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-12</time>
+		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-13</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
-		<p>赚钱宝root后，自由了，然后呢？</p>
+		<!--
+author:ivan 
+date: 2016-02-13
+title: 赚钱宝root后第三件事，安装python的百度云客户端-赚钱宝折腾 
+tags: 百度云,bypy,赚钱宝 
+category: 赚钱宝折腾 
+status: publish
+summary: 赚钱宝root后，安装python版的百度云客户端，实现百度云网盘的上传下载。
+-->
+<hr />
+<p><strong>迅雷赚钱宝</strong>root后真是一切都自由了！</p>
+<p>关于root，原来是序列号的后8位，后来迅雷官方修改规则了，特别是pro，完全进不去。没办法，只能在某宝上找了一个算号的算出来密码进去了。</p>
+<h2 id="在entware下安装依赖包">在entware下安装依赖包</h2>
+<p>安装python2.7和python-requests和git（git用来下载源码包）：</p>
+<pre><code>/opt/bin/opkg install python python-requests git </code></pre>
+<p>安装好以后就可以下载和安装bypy了：</p>
+<pre><code>cd /app
+git clone https://github.com/houtianze/bypy.git</code></pre>
+<p>这样就下好bypy了，然后进去看一下使用：</p>
+<pre><code>cd /app/bypy</code></pre>
+<h2 id="操作">操作</h2>
+<p>第一次运行时需要授权，只需跑任何一个命令（比如 <code>bypy.py info</code>）然后跟着说明（登陆等）来授权即可。授权只需一次，一旦成功，以后不会再出现授权提示.</p>
+<p>更详细的了解某一个命令：</p>
+<pre><code>bypy.py help &lt;command&gt;</code></pre>
+<p>显示在云盘（程序的）根目录下文件列表：</p>
+<pre><code>bypy.py list</code></pre>
+<p>把当前目录同步到云盘：</p>
+<pre><code>bypy.py syncup</code></pre>
+<p>or</p>
+<pre><code>bypy.py upload</code></pre>
+<p>把云盘内容同步到本地来：</p>
+<pre><code>bypy.py syncdown</code></pre>
+<p>or</p>
+<pre><code>bypy.py downdir /</code></pre>
+<p>比较本地当前目录和云盘（程序的）根目录（个人认为非常有用）：</p>
+<pre><code>bypy.py compare</code></pre>
+<p>更多命令和详细解释请见运行bypy.py的输出。</p>
+<h2 id="调试">调试</h2>
+<p>运行时添加<code>-v</code>参数，会显示进度详情。
+运行时添加<code>-d</code>，会显示一些调试信息。
+运行时添加<code>-ddd</code>，还会会显示HTTP通讯信息（警告：非常多）</p>
+<pre><code></code></pre>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
@@ -76,17 +102,35 @@
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/2146007892.html" rel="tag">samba</a></li>
-                   <li><a href="/tags/235837707.html" rel="tag">entware</a></li>
+                   <li><a href="/tags/1623543441.html" rel="tag">百度云</a></li>
+                   <li><a href="/tags/160680135.html" rel="tag">bypy</a></li>
                    <li><a href="/tags/2057163754.html" rel="tag">赚钱宝</a></li>
         	</ul>
 		
-		<div class="read-more">
-		<a href="/blog/entware-smb.html">阅读全文<i class="fa fa-angle-double-right "></i></a>
-	</div>
-	</footer><!-- .entry-footer --></article><!-- #post-## -->					        						        																		</div>
+	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
+	<div id="respond" class="comment-respond">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="0e460b0f7d70c50caeeab7e8d7583472" data-title="赚钱宝root后第三件事，安装python的百度云客户端-赚钱宝折腾" data-url="//blog/bypy.html"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"ivanhao1984"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+        <!-- 多说公共JS代码 end -->
+	</div><!-- #respond -->
+</div>
+					</div>
 					<!-- #main -->
 				</div>
+				<!-- #primary -->
 				<div id="secondary" class="widget-area main-sidebar col-md-3" role="complementary">
 	<aside class="widget widget_text sidebar-widget clearfix">
 	<h3 class="widget-title">介绍</h3>
@@ -149,7 +193,7 @@
 		<!-- .container -->
 	</div>
 	<!-- .quest-row -->
-</div><!-- #content -->		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
+</div>		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 copyright-text">
