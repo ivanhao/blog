@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Github pages域名解析|Ivan&#039;s Blog</title>
-	<meta name="keywords" content="gitblog,github,pages,Ivan&#039;s Blog">
-	<meta name="description" content="将github pages解析到自己的域名，通过dnspod和cname方式。">
+	<title>我的第二篇MarkDown博客!|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="GitBlog,markdown,Ivan&#039;s Blog">
+	<meta name="description" content="你好！GitBlog">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -46,54 +46,55 @@
 					<div id="main" class="site-main" role="main">
 						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/github-pages-cname.html" rel="bookmark">Github pages域名解析</a></h1>
+	<h1 class="post-title"><a href="/blog/test.html" rel="bookmark">我的第二篇MarkDown博客!</a></h1>
 	<div class="entry-meta">
-		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-13</time>
+		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-15</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
 		<!--
 author:ivan 
-date: 2016-02-13
-title: Github pages域名解析 
-tags: gitblog,github pages
-category: gitblog 
+date: 2016-02-15
+title: 我的第二篇MarkDown博客!
+tags: GitBlog,markdown
+category: GitBlog
 status: publish
-summary: 将github pages解析到自己的域名，通过dnspod和cname方式。 
+summary: 你好！GitBlog
 -->
+<p>你好！<strong>GitBlog</strong>
+这是一篇由gitblog写的博客。
+GitBlog是一个简单易用的Markdown博客系统，它不需要数据库，没有管理后台功能，更新博客只需要添加你写好的Markdown文件即可。</p>
 <hr />
-<h2 id="在github pages里添加CNAME文件">在github pages里添加CNAME文件</h2>
-<p>在仓库根目录下添加一个CNAME文件，没有后缀名，里面内容为你的域名(如:test.com),不需要添加http/www等前缀。</p>
-<p>ping username.github.io记录下IP地址
-<a href="http://hiphotos.baidu.com/exp/pic/item/7ac880510fb30f241819b485ca95d143ac4b0371.jpg"></a></p>
-<h2 id="添加 DNS  Service记录">添加 DNS  Service记录</h2>
-<p>去DNSPod注册个账号，添加域名，设置两个A记录。分别是@和w w w，ip地址填上个步骤获取的IP地址。
-<a href="http://hiphotos.baidu.com/exp/pic/item/1899a23eb13533faa39ec8a8aad3fd1f40345bc8.jpg"></a></p>
-<h2 id="设置域名的DNS">设置域名的DNS</h2>
-<p>在相应域名的Csutom DNS里，设置DNS service,添加两条记录f1g1ns1.dnspod.net和f1g1ns2.dnspod.net
-<a href="http://hiphotos.baidu.com/exp/pic/item/adee30dda3cc7cd966ce6f5f3b01213fb90e9112.jpg"></a></p>
-<p>4、漫长的等待</p>
-<p>要全球解析生效，得等上一会了，也可以先ping一下自己的设置对不对。</p>
-<blockquote>
-<p><em>转自：<a href="http://jingyan.baidu.com/article/3c343ff70fb6e60d3779632f.html">http://jingyan.baidu.com/article/3c343ff70fb6e60d3779632f.html</a></em></p>
-</blockquote>
+<p><em>2016-02-13更新</em></p>
+<h3 id="关于作者">关于作者</h3>
+<p>应该算是个geek吧，喜欢linux，arduino，喜欢折腾小硬件，做过智能小车，小机器人，WIFI智能插座等。</p>
+<h3 id="为什么建这个blog">为什么建这个blog</h3>
+<p>个人最早的博客是在新浪，那时候博客刚兴起，只是跟风。后来在百度空间上记录了不少技术类博客，但是后面百度空间改版，不好用了，荒了。中间建过UBUNTU的QQ群和论坛，上班后没时间打理，基本也荒了。</p>
+<p>然后，在树莓派交流群里碰到个群友，问我平时怎么记录那些技术方法、命令、代码，有没有博客。突然发现自己平时记录的习惯确实不好，确实应该弄个博客来整理和记录了。一是自己用来整理记录，二也可以方便跟别人分享交流。</p>
+<p>接着，就在想，博客放在哪呢？在自己家里的服务器上放，容易出现断电断网等不可控的风险，不稳定。VPS？还是不太保险。新浪和百度这种也不是没用过，万一哪天改版或者停了，也不好。然后就想到可以用github pages的功能来弄个博客。</p>
+<p>github pages建博客的好处有哪些呢？</p>
+<ol>
+<li>免费</li>
+<li>github的优势，可以方便的导出和克隆所有源码，方便以后的备份和迁移</li>
+<li>使用markdown来写博客，专注于内容，不需要为排版操心</li>
+<li>直接在命令行用vi或者vim来写博客，然后git push到github上，体验很好^_^</li>
+</ol>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
-          <li><a href="/category/1029963234.html" rel="category">gitblog</a></li>
+          <li><a href="/category/107260689.html" rel="category">GitBlog</a></li>
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/1029963234.html" rel="tag">gitblog</a></li>
-                   <li><a href="/tags/547641708.html" rel="tag">github</a></li>
-                   <li><a href="/tags/1330596651.html" rel="tag">pages</a></li>
+                   <li><a href="/tags/107260689.html" rel="tag">GitBlog</a></li>
+                   <li><a href="/tags/474222454.html" rel="tag">markdown</a></li>
         	</ul>
 		
 	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
 	<div id="respond" class="comment-respond">
 		<!-- 多说评论框 start -->
-		<div class="ds-thread" data-thread-key="c19be5daaebc1314578a798e4a110d14" data-title="Github pages域名解析" data-url="//blog/github-pages-cname.html"></div>
+		<div class="ds-thread" data-thread-key="02b1130bf464f568daf0dc5d3a14c99d" data-title="我的第二篇MarkDown博客!" data-url="//blog/test.html"></div>
 		<!-- 多说评论框 end -->
 		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 		<script type="text/javascript">
