@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Git命令一览|Ivan&#039;s Blog</title>
-	<meta name="keywords" content="Git,GitBlog,Ivan&#039;s Blog">
-	<meta name="description" content="Git的常用命令一览，简单实用">
+	<title>赚钱宝root后挂载共享盘或者NAS-赚钱宝折腾|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="samba,entware,赚钱宝,赚钱宝折腾,Ivan&#039;s Blog">
+	<meta name="description" content="赚钱宝使用共享盘或者NAS当下载盘">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -46,38 +46,65 @@
 					<div id="main" class="site-main" role="main">
 						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/git_help.html" rel="bookmark">Git命令一览</a></h1>
+	<h1 class="post-title"><a href="/blog/entware-smb-extend.html" rel="bookmark">赚钱宝root后挂载共享盘或者NAS-赚钱宝折腾</a></h1>
 	<div class="entry-meta">
-		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-11</time>
+		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-20</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
 		<!--
 author:ivan 
-date: 2016-02-11
-title: Git命令一览 
-tags: Git
-category: GitBlog
+date: 2016-02-20
+title: 赚钱宝root后挂载共享盘或者NAS-赚钱宝折腾 
+tags: samba,entware,赚钱宝 
+category: 赚钱宝折腾 
 status: publish
-summary: Git的常用命令一览，简单实用
+summary: 赚钱宝使用共享盘或者NAS当下载盘
 -->
-<p><strong>Git命令：</strong>
-<img src="../git_help.jpg" alt="image" /></p>
+<hr />
+<p><strong>迅雷赚钱宝</strong>root后真是一切都自由了！</p>
+<p>关于root，原来是序列号的后8位，后来迅雷官方修改规则了，特别是pro，完全进不去。没办法，只能在某宝上找了一个算号的算出来密码进去了。</p>
+<p>ROOT后首先是要创建一个自己的root权限用户，并配置entWare环境。</p>
+<h2 id="一、先简单说原理">一、先简单说原理</h2>
+<pre><code>首先，赚钱宝会把USB口mount到/media/sda1，所以，需要把/media/sda1卸载（umount),然后把共享的文件夹用mount -t cifs的方式挂载到/media/sda1
+
+然后，有个问题，就是`umount /media/sda1`时，由于赚钱宝进程在使用，会提示busy无法umount，那需要停进程，在`/thunder/bin`下有个restart_app.sh，我改了一下，用来stop所有赚钱宝的进程。但是没有成功，重新启动后还是会挂载USB口，后来改进了一下，只停`/thunder/bin/dcdn_client`就行了。挂载好共享盘后再重新启动。
+
+方法：
+```
+kill `pidof dcdn_client`
+umount /media/sda1
+mount -t cifs -o username=`xxx`,password=`xxx-passwd`,rw //`192.168.1.xx/sharefolder` /media/sda1
+/thunder/bin/dcdn_client 0
+```</code></pre>
+<h2 id="二、优化">二、优化</h2>
+<pre><code>1. 把这些放在一个sh里，然后放在/usr/bin下，比如mounthd.sh</code></pre>
+<pre><code>    kill `pidof dcdn_client`
+    umount /media/sda1
+    mount -t cifs -o username=`xxx`,password=`xxx-passwd`,rw //`192.168.1.xx/sharefolder` /media/sda1
+    /thunder/bin/dcdn_client 0</code></pre>
+<pre><code>这样每次只需要输入mouthd.sh就可以自动执行这个操作了
+
+2. 在`/etc/rc.local`里加入`/usr/bin/mounthd.sh`，让它每次启动时自动执行。（这个我没实际测试）</code></pre>
+<p><img src="http://d.pcs.baidu.com/file/ba2bbd23bfdeee1a50ae4bbca1e3c703?fid=3422951042-250528-739449759658439&amp;time=1455954332&amp;rt=sh&amp;sign=FDTAERV-DCb740ccc5511e5e8fedcff06b081203-ZL31M9ktRTN%2FZoAEU9Ok%2F7NY9Ts%3D&amp;expires=8h&amp;chkv=1&amp;chkbd=0&amp;chkpc=&amp;dp-logid=1174870207332816501&amp;dp-callid=0&amp;r=384229883" alt="audio" /></p>
+<pre><code></code></pre>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
-          <li><a href="/category/107260689.html" rel="category">GitBlog</a></li>
+          <li><a href="/category/534749761.html" rel="category">赚钱宝折腾</a></li>
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/1141897447.html" rel="tag">Git</a></li>
+                   <li><a href="/tags/2146007892.html" rel="tag">samba</a></li>
+                   <li><a href="/tags/235837707.html" rel="tag">entware</a></li>
+                   <li><a href="/tags/2057163754.html" rel="tag">赚钱宝</a></li>
         	</ul>
 		
 	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
 	<div id="respond" class="comment-respond">
 		<!-- 多说评论框 start -->
-		<div class="ds-thread" data-thread-key="fc8e8543d5c5c0c0bc52c41689403d0c" data-title="Git命令一览" data-url="//blog/git_help.html"></div>
+		<div class="ds-thread" data-thread-key="743430c95011c0dbefd5e10e5208ec80" data-title="赚钱宝root后挂载共享盘或者NAS-赚钱宝折腾" data-url="//blog/entware-smb-extend.html"></div>
 		<!-- 多说评论框 end -->
 		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 		<script type="text/javascript">
