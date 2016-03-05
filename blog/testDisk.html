@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Git命令一览|Ivan&#039;s Blog</title>
-	<meta name="keywords" content="Git,GitBlog,Ivan&#039;s Blog">
-	<meta name="description" content="Git的常用命令一览，简单实用">
+	<title>用LINUX下的testDisk找回损坏硬盘的文件|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="testDisk,数据恢复,Linux,Ivan&#039;s Blog">
+	<meta name="description" content="用LINUX下的testDisk找回损坏硬盘的文件">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -46,38 +46,95 @@
 					<div id="main" class="site-main" role="main">
 						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/git_help.html" rel="bookmark">Git命令一览</a></h1>
+	<h1 class="post-title"><a href="/blog/testDisk.html" rel="bookmark">用LINUX下的testDisk找回损坏硬盘的文件</a></h1>
 	<div class="entry-meta">
-		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-11</time>
+		<time class="post-date"><i class="fa fa-clock-o"></i>2016-03-05</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
 		<!--
 author:ivan 
-date: 2016-02-11
-title: Git命令一览 
-tags: Git
-category: GitBlog
+date: 2016-03-05
+title: 用LINUX下的testDisk找回损坏硬盘的文件 
+tags: testDisk,数据恢复 
+category: Linux 
 status: publish
-summary: Git的常用命令一览，简单实用
+summary: 用LINUX下的testDisk找回损坏硬盘的文件 
 -->
-<p><strong>Git命令：</strong>
-<img src="../git_help.jpg" alt="image" /></p>
+<hr />
+<h2 id="现象">现象</h2>
+<p>WINDOWS7下的硬盘损坏，开机报警，拆下后在用易驱线在别的WINDOWS电脑中也无法识别，同事用WIN下的修复软件没有修复成功，最后用一个购买的软件从分区中把重要文件拷出。</p>
+<h2 id="testDisk拷贝文件">testDisk拷贝文件</h2>
+<h4 id="在debian下安装testDisk">在debian下安装testDisk</h4>
+<pre><code>  sudo apt-get install testDisk</code></pre>
+<p>安装完成后先用<code>fdisk -l</code>看一下要修复的硬盘在/dev下的哪个位置，例如是/dev/sda</p>
+<p>然后：</p>
+<pre><code>  sudo testdisk /dev/sda</code></pre>
+<h5 id="1.选择硬盘">1.选择硬盘</h5>
+<pre><code>Select a media (use Arrow keys, then press Enter):
+    Disk /dev/sda - 160 GB / 149 GiB - ATA HITACHI HTS54251
+    Disk /dev/sdb - 3272 MB / 3121 MiB - SM324BC USB DISK</code></pre>
+<h5 id="2.选择testdisk修复的平台,windows分区选Intel的">2.选择testdisk修复的平台,windows分区选Intel的</h5>
+<pre><code>    Diskse select the partition table type, press Enter when done.
+    [Intel  ]  Intel/PC partition
+    [EFI GPT]  EFI GPT partition map (Mac i386, some x86_64...)
+    [Mac    ]  Apple partition map
+    [None   ]  Non partitioned media
+    [Sun    ]  Sun Solaris partition
+    [XBox   ]  XBox partition
+    [Return ]  Return to disk selection /dev/sda - 160 GB / 149 GiB - ATA HITACHI HTS54251</code></pre>
+<h5 id="3.使用testdisk分析,现在选择Analyse进行分析">3.使用testdisk分析,现在选择Analyse进行分析</h5>
+<pre><code>[ Analyse  ]  Analyse current partition structure and search for lost partitions
+[ Advanced ]  Filesystem Utils
+[ Geometry ]  Change disk geometry
+[ Options  ]  Modify options
+[ MBR Code ]  Write TestDisk MBR code to first sector
+[ Delete   ]  Delete all data in the partition table
+[ Quit     ]  Return to disk selection</code></pre>
+<h5 id="4.分析完后基本所有的分区都出来了,直接回车就好了,默认直接回车是快速扫描.">4.分析完后基本所有的分区都出来了,直接回车就好了,默认直接回车是快速扫描.</h5>
+<pre><code>  *=Primary bootable  P=Primary  L=Logical  E=Extended  D=Deleted
+    [Quick Search]  [ Backup ]</code></pre>
+<pre><code>然后因为没用vista,所以选择n。</code></pre>
+<pre><code>    Should TestDisk search for partition created under Vista ? [Y/N] (answer Yes if
+    unsure)
+    N</code></pre>
+<h5 id="5.进入后可以看到分区表了。">5.进入后可以看到分区表了。</h5>
+<pre><code>    Disk /dev/sda - 160 GB / 149 GiB - CHS 19457 255 63
+         Partition               Start        End    Size in sectors
+    * HPFS - NTFS              0   1  1  1567 254 63   25189857
+    L FAT32 LBA             1568   2  1  5097 254 63   56709324 [NO NAME]
+    L Linux Swap            5098   1  1  5221 254 63    1991997
+    L Linux                 5222   1  1  7298 254 63   33366942
+    L Linux                 7299   1  1 19456 254 63  195318207
+    Structure: Ok.  Use Up/Down Arrow keys to select partition.
+    Use Left/Right Arrow keys to CHANGE partition characteristics:
+    *=Primary bootable  P=Primary  L=Logical  E=Extended  D=Deleted
+    Keys A: add partition, L: load backup, T: change type, P: list files,
+         Enter: to continue
+    NTFS, 12 GB / 12 GiB</code></pre>
+<pre><code>可以按p进入一下，看看文件是不是你想要的,进入后可以按提示将文件拷贝出来.如用:标记要拷贝的文件，然后大写的C进行拷贝，拷贝会提示你选择目标路径。
+
+这样就可以把里面的文件拷贝出来的。
+
+如果显示的和你的分区不一样,那可能还需要使用Deeper search的功能.
+
+如果已经找直接按write直接进行写到分区表中修复.</code></pre>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
-          <li><a href="/category/107260689.html" rel="category">GitBlog</a></li>
+          <li><a href="/category/1752954334.html" rel="category">Linux</a></li>
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/1141897447.html" rel="tag">Git</a></li>
+                   <li><a href="/tags/291472963.html" rel="tag">testDisk</a></li>
+                   <li><a href="/tags/595516469.html" rel="tag">数据恢复</a></li>
         	</ul>
 		
 	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
 	<div id="respond" class="comment-respond">
 		<!-- 多说评论框 start -->
-		<div class="ds-thread" data-thread-key="fc8e8543d5c5c0c0bc52c41689403d0c" data-title="Git命令一览" data-url="//blog/git_help.html"></div>
+		<div class="ds-thread" data-thread-key="ff9e403024ad6f17488529b4688bd373" data-title="用LINUX下的testDisk找回损坏硬盘的文件" data-url="//blog/testDisk.html"></div>
 		<!-- 多说评论框 end -->
 		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 		<script type="text/javascript">
