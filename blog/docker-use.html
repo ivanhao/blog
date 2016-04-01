@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Ivan&#039;s Blog</title>
-	<meta name="keywords" content="Oracle,GitBlog,博客,Markdown博客,jockchou,Ivan&#039;s Blog">
-	<meta name="description" content="GitBlog是一个简单易用的Markdown博客系统">
+	<title>docker的基本使用|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="docker,Ivan&#039;s Blog">
+	<meta name="description" content="docker的基本使用">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -39,53 +39,83 @@
 	</div>
 </div>
 </header>		    <div id="content">
-					    	    	
-    	    		<div class="quest-row" id="title-container">
-	<div class="container title-container">
-		<div class="row">
-			<div class="col-md-6">
-								<h3>Oracle</h3>
-							</div>
-			<div class="col-md-6">
-				<ul class="breadcrumbs">
-					<li><a href="/">Home</a></li>
-										<li>Oracle</li>
-									</ul>
-				</div>
-		</div>
-	</div>
-</div>    		<div class="quest-row site-content">
+	<div class="quest-row site-content">
 		<div class="container">
 			<div class="row">
-				<div id="primary" class="content-area col-md-9">
+				<div id="primary" class="content-area single col-md-9">
 					<div id="main" class="site-main" role="main">
-																										        	<article class="post hentry">
+						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/auto-imp.html" rel="bookmark">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></h1>
+	<h1 class="post-title"><a href="/blog/docker-use.html" rel="bookmark">docker的基本使用</a></h1>
 	<div class="entry-meta">
 		<time class="post-date"><i class="fa fa-clock-o"></i>2016-04-01</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
-		<p>在WINDOWS服务器中执行自动拷贝数据库备份并恢复</p>
+		<!--
+author:ivan 
+date: 2016-04-01
+title: docker的基本使用
+tags: docker
+category: docker
+status: publish
+summary: docker的基本使用
+-->
+<hr />
+<p>以UBUNTU 14.04 为例：</p>
+<ol>
+<li>安装</li>
+</ol>
+<pre><code>sudo apt-get update  
+sudo apt-get install docker.io </code></pre>
+<ol>
+<li>查看服务状态</li>
+</ol>
+<pre><code>sudo service docker.io status
+sudo docker ps</code></pre>
+<ol>
+<li>容器管理</li>
+</ol>
+<p>刚安装完还没有镜像，需要拉一个镜像</p>
+<pre><code>docker pull [镜像名]</code></pre>
+<p>拉取镜像完成后可以查看一下：</p>
+<pre><code>docker images</code></pre>
+<p>未完待续....</p>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
-          <li><a href="/category/1049233538.html" rel="category">Oracle</a></li>
+          <li><a href="/category/1295647713.html" rel="category">docker</a></li>
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/1049233538.html" rel="tag">Oracle</a></li>
-                   <li><a href="/tags/1087743293.html" rel="tag">bat</a></li>
+                   <li><a href="/tags/1295647713.html" rel="tag">docker</a></li>
         	</ul>
 		
-		<div class="read-more">
-		<a href="/blog/auto-imp.html">阅读全文<i class="fa fa-angle-double-right "></i></a>
-	</div>
-	</footer><!-- .entry-footer --></article><!-- #post-## -->					        						        																		</div>
+	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
+	<div id="respond" class="comment-respond">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="0a85b6bf5651fc375e55e218e9d1140b" data-title="docker的基本使用" data-url="//blog/docker-use.html"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"ivanhao1984"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+        <!-- 多说公共JS代码 end -->
+	</div><!-- #respond -->
+</div>
+					</div>
 					<!-- #main -->
 				</div>
+				<!-- #primary -->
 				<div id="secondary" class="widget-area main-sidebar col-md-3" role="complementary">
 	<aside class="widget widget_text sidebar-widget clearfix">
 	<h3 class="widget-title">介绍</h3>
@@ -165,7 +195,7 @@
 		<!-- .container -->
 	</div>
 	<!-- .quest-row -->
-</div><!-- #content -->		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
+</div>		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 copyright-text">
