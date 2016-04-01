@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>在WINDOWS服务器中执行自动拷贝数据库备份并恢复|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="Oracle,bat,Ivan&#039;s Blog">
+	<meta name="description" content="在WINDOWS服务器中执行自动拷贝数据库备份并恢复">
+	
+	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
+	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
+	<link rel="stylesheet" href="http://fonts.useso.com/css?family=Open+Sans:300,400,600&subset=latin,latin-ext">
+	<link rel="stylesheet" href="/theme/quest/css/style.css?ver=2.2" type="text/css" media="all" />
+	<link rel="stylesheet" href="/theme/quest/css/customizer.css?ver=2.2" type="text/css" media="all" />
+	<link rel="alternate" type="application/rss+xml" title="Ivan&#039;s Blog" href="//feed.xml" />
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?555e31d6524985cd82ac348760cd7a50";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+	</head>
+
+<body class="home blog wide">
+	<div id="page" class="hfeed site">
+		<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+		    <header id="masthead" class="main-header" role="banner">
+<div class="container">
+	<div class="row">
+		<div class="site-branding col-md-4">
+			<h1 class="site-title"><a href="/" rel="home">Ivan&#039;s Blog</a></h1>
+				<span class="site-description">随手写，随手记</span>
+		</div>
+		<!-- .site-branding -->
+	</div>
+</div>
+</header>		    <div id="content">
+	<div class="quest-row site-content">
+		<div class="container">
+			<div class="row">
+				<div id="primary" class="content-area single col-md-9">
+					<div id="main" class="site-main" role="main">
+						<article class="post hentry">
+	<header class="entry-header">
+	<h1 class="post-title"><a href="/blog/auto-imp.html" rel="bookmark">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></h1>
+	<div class="entry-meta">
+		<time class="post-date"><i class="fa fa-clock-o"></i>2016-04-01</time>
+				<span class="seperator">/</span>
+	    <span><i class="fa fa-user"></i> ivan</span>
+	    	</div><!-- .entry-meta -->
+</header><!-- .entry-header -->	<div class="entry-content">
+		<!--
+author: ivan
+head: http://pingodata.qiniudn.com/jockchou-avatar.jpg
+date: 2016-04-01
+title: 在WINDOWS服务器中执行自动拷贝数据库备份并恢复
+tags: Oracle,bat
+images: http://pingodata.qiniudn.com/cube2.jpg
+category: Oracle
+status: publish
+summary: 在WINDOWS服务器中执行自动拷贝数据库备份并恢复
+-->
+<h2 id="数据库自动恢复脚本">数据库自动恢复脚本</h2>
+<ul>
+<li>主要用于记录：
+<pre><code>
+@echo off
+rem 取时间
+set year=%date:~0,4%
+set mon=%date:~5,2%
+set day=%date:~8,2%</code></pre></li>
+</ul>
+<p>rem 路径变量
+set loc=E:\ora-bak<br />
+set rar=&quot;C:\Program Files (x86)\WinRAR\&quot;</p>
+<p>rem 取头一天时间
+echo Wscript.echo DatePart(&quot;YYYY&quot;,dateadd(&quot;d&quot;,-1,date)) ^&amp; Right(&quot;0&quot; ^&amp; DatePart(&quot;m&quot;,dateadd(&quot;d&quot;,-1,date)),2) ^&amp; Right(&quot;0&quot; ^&amp; DatePart(&quot;d&quot;,dateadd(&quot;d&quot;,-1,date)),2)&gt;vbs.vbs
+for /f %%a in ('cscript //nologo vbs.vbs') do del vbs.vbs&amp;&amp;set ld=%%a</p>
+<p>echo Date is: %year%-%mon%-%day%
+echo LastDate is: %ld%</p>
+<p>rem 删除头一天文件
+del /Q nc55-%ld:~0,4%-%ld:~4,2%-%ld:~6,2%.dmp*</p>
+<p>rem 复制文件
+echo coping z:\nc55-%year%-%mon%-%day%.dmp.gz ...
+copy z:\nc55-%year%-%mon%-%day%.dmp.gz %loc%</p>
+<p>rem 解压文件
+echo unraring...
+%rar%winrar e %loc%nc55-%year%-%mon%-%day%.dmp.gz %loc%</p>
+<p>rem 生成sql1
+echo create sql1 ...
+echo. &gt;%loc%1.sql
+echo create user nc%date:~2,2%%mon%%day% identified by 1;&gt;&gt;%loc%1.sql
+echo grant connect,dba to nc%date:~2,2%%mon%%day%;&gt;&gt;%loc%1.sql
+echo
+grant read,write on directory dir_dp to nc%date:~2,2%%mon%%day%;&gt;&gt;%loc%1.sql
+echo commit;&gt;&gt;%loc%1.sql
+echo exit &gt;&gt;%loc%1.sql</p>
+<p>rem 生成sql2
+echo create sql2 ...
+echo. &gt;%loc%2.sql
+echo drop user nc%ld:~2,2%%ld:~4,2%%ld:~6,2% cascade;&gt;&gt;%loc%2.sql
+echo exit &gt;&gt;%loc%2.sql</p>
+<p>rem 停服务
+echo stop service
+taskkill /f /im java.exe</p>
+<p>rem 执行sql脚本
+running sqls
+sqlplus sys/sys@orcl2 as sysdba @%loc%1.sql
+sqlplus sys/sys@orcl2 as sysdba @%loc%2.sql</p>
+<p>rem 启动服务
+echo start service
+start cmd /c &quot;D:\nchome1211\startup.bat&quot;</p>
+<p>rem 导入数据库备份
+impdp nc%date:~2,2%%mon%%day%/1@orcl2 directory=dir_dp dumpfile=nc55-%year%-%mon%-%day%.dmp logfile=nc55-%year%-%mon%-%day%.log remap_schema=nc55:nc%date:~2,2%%mon%%day%</p>
+<p>echo done
+exit</p>
+<pre><code></code></pre>
+	</div><!-- .entry-content -->	<footer class="entry-footer">
+		<ul class="post-categories">
+          
+          <li><a href="/category/1049233538.html" rel="category">Oracle</a></li>
+        	</ul>
+		
+		<ul class="post-tags">
+                   <li><a href="/tags/1049233538.html" rel="tag">Oracle</a></li>
+                   <li><a href="/tags/1087743293.html" rel="tag">bat</a></li>
+        	</ul>
+		
+	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
+	<div id="respond" class="comment-respond">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="4f6df34b1ef43c0f7fae284f8fff6a49" data-title="在WINDOWS服务器中执行自动拷贝数据库备份并恢复" data-url="//blog/auto-imp.html"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"ivanhao1984"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+        <!-- 多说公共JS代码 end -->
+	</div><!-- #respond -->
+</div>
+					</div>
+					<!-- #main -->
+				</div>
+				<!-- #primary -->
+				<div id="secondary" class="widget-area main-sidebar col-md-3" role="complementary">
+	<aside class="widget widget_text sidebar-widget clearfix">
+	<h3 class="widget-title">介绍</h3>
+	<div class="textwidget">
+		<p>本博客使用Gitblog搭建，欢迎你!</p>
+	</div>
+</aside>
+	<aside class="widget widget_search sidebar-widget clearfix">
+	<h3 class="widget-title">搜索</h3>
+	<form class="search" action="/search" method="get">
+		<fieldset>
+			<div class="text">
+				<input name="keyword" id="keyword" type="text" placeholder="Search ..."/>
+				<button class="fa fa-search">Search</button>
+			</div>
+		</fieldset>
+	</form>
+</aside>	<aside class="widget widget_categories sidebar-widget clearfix">
+	<h3 class="widget-title">分类目录</h3>
+	<ul>
+		        <li class="cat-item"><a href="/category/107260689.html" >GitBlog</a></li>
+                <li class="cat-item"><a href="/category/534749761.html" >赚钱宝折腾</a></li>
+                <li class="cat-item"><a href="/category/1752954334.html" >Linux</a></li>
+                <li class="cat-item"><a href="/category/1295647713.html" >docker</a></li>
+                <li class="cat-item"><a href="/category/1049233538.html" >Oracle</a></li>
+        	</ul>
+</aside>
+	<aside class="widget widget_archive sidebar-widget clearfix">
+	<h3 class="widget-title">文章归档</h3>
+	<ul>
+		<li><a href="/archive/201604.html">2016-04</a></li>
+		<li><a href="/archive/201603.html">2016-03</a></li>
+		<li><a href="/archive/201602.html">2016-02</a></li>
+		</ul>
+</aside>	<aside class="widget widget_recent_entries sidebar-widget clearfix">
+	<h3 class="widget-title">近期文章</h3>
+	<ul>
+	    <li><a href="/blog/auto-imp.html">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></li>
+        <li><a href="/blog/vi.html">VI命令快捷键</a></li>
+        <li><a href="/blog/testDisk.html">用LINUX下的testDisk找回损坏硬盘的文件</a></li>
+        <li><a href="/blog/entware-smb-extend.html">赚钱宝root后挂载共享盘或者NAS-赚钱宝折腾</a></li>
+        <li><a href="/blog/docker-deb.html">docker的树莓派deb包，香蕉派也可以使用</a></li>
+    	</ul>
+</aside>
+	<aside class="widget widget_tag_cloud sidebar-widget clearfix">
+	<h3 class="widget-title">标签</h3>
+	<div class="tagcloud">
+		<a href="/tags/1141897447.html"  title="Git" >Git</a>
+		<a href="/tags/1623543441.html"  title="百度云" >百度云</a>
+		<a href="/tags/160680135.html"  title="bypy" >bypy</a>
+		<a href="/tags/2057163754.html"  title="赚钱宝" >赚钱宝</a>
+		<a href="/tags/107260689.html"  title="GitBlog" >GitBlog</a>
+		<a href="/tags/474222454.html"  title="markdown" >markdown</a>
+		<a href="/tags/1334748759.html"  title="ssh" >ssh</a>
+		<a href="/tags/2146007892.html"  title="samba" >samba</a>
+		<a href="/tags/235837707.html"  title="entware" >entware</a>
+		<a href="/tags/1608014486.html"  title="vi" >vi</a>
+		<a href="/tags/1155787600.html"  title="linux" >linux</a>
+		<a href="/tags/1295647713.html"  title="docker" >docker</a>
+		<a href="/tags/14240036.html"  title="daocloud" >daocloud</a>
+		<a href="/tags/1049233538.html"  title="Oracle" >Oracle</a>
+		<a href="/tags/1087743293.html"  title="bat" >bat</a>
+		<a href="/tags/1756854552.html"  title="树莓派" >树莓派</a>
+		<a href="/tags/291472963.html"  title="testDisk" >testDisk</a>
+		<a href="/tags/595516469.html"  title="数据恢复" >数据恢复</a>
+		<a href="/tags/1029963234.html"  title="gitblog" >gitblog</a>
+		<a href="/tags/547641708.html"  title="github" >github</a>
+		<a href="/tags/1330596651.html"  title="pages" >pages</a>
+		<a href="/tags/1317682471.html"  title="xware" >xware</a>
+		<a href="/tags/1115655607.html"  title="迅雷远程" >迅雷远程</a>
+		</div>
+</aside>
+</div><!-- #secondary -->
+			</div>
+			<!-- .row -->
+		</div>
+		<!-- .container -->
+	</div>
+	<!-- .quest-row -->
+</div>		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 copyright-text">
+				<a href="https://github.com/jockchou/gitblog">Proudly powered by Gitblog</a>
+			</div>
+			<div class="col-md-6 social-icon-container clearfix">
+				<ul></ul>
+			</div>
+		</div>
+		<!-- end row -->
+	</div>
+	<!-- end container -->
+</footer>	</div><!-- #page -->
+	<a href="#0" class="cd-top"><i class="fa fa-angle-up"></i></a>
+
+
+<script type="text/javascript" src="/theme/quest/assets/plugins/modernizr/modernizr.custom.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/js/jquery/jquery.js?ver=1.11.2"></script>
+<script type="text/javascript" src="/theme/quest/js/jquery/jquery-migrate.min.js?ver=1.2.1"></script>
+<script type="text/javascript" src="/theme/quest/assets/plugins/bootstrap/js/bootstrap.min.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/assets/plugins/wow/wow.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/assets/plugins/colorbox/jquery.colorbox-min.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/assets/js/quest.js?ver=2.2"></script>
+	
+<link rel="stylesheet" href="http://cdn.bootcss.com/highlight.js/8.6/styles/default.min.css">
+<script src="http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>
