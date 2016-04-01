@@ -66,59 +66,70 @@ summary: 在WINDOWS服务器中执行自动拷贝数据库备份并恢复
 -->
 <h2 id="数据库自动恢复脚本">数据库自动恢复脚本</h2>
 <ul>
-<li>主要用于记录：
-<pre><code>
-@echo off
+<li>主要用于记录：</li>
+</ul>
+<pre><code>@echo off
 rem 取时间
 set year=%date:~0,4%
 set mon=%date:~5,2%
-set day=%date:~8,2%</code></pre></li>
-</ul>
-<p>rem 路径变量
-set loc=E:\ora-bak<br />
-set rar=&quot;C:\Program Files (x86)\WinRAR\&quot;</p>
-<p>rem 取头一天时间
-echo Wscript.echo DatePart(&quot;YYYY&quot;,dateadd(&quot;d&quot;,-1,date)) ^&amp; Right(&quot;0&quot; ^&amp; DatePart(&quot;m&quot;,dateadd(&quot;d&quot;,-1,date)),2) ^&amp; Right(&quot;0&quot; ^&amp; DatePart(&quot;d&quot;,dateadd(&quot;d&quot;,-1,date)),2)&gt;vbs.vbs
-for /f %%a in ('cscript //nologo vbs.vbs') do del vbs.vbs&amp;&amp;set ld=%%a</p>
-<p>echo Date is: %year%-%mon%-%day%
-echo LastDate is: %ld%</p>
-<p>rem 删除头一天文件
-del /Q nc55-%ld:~0,4%-%ld:~4,2%-%ld:~6,2%.dmp*</p>
-<p>rem 复制文件
+set day=%date:~8,2%
+
+rem 路径变量
+set loc=E:\ora-bak\
+set rar="C:\Program Files (x86)\WinRAR\"
+
+rem 取头一天时间
+echo Wscript.echo DatePart("YYYY",dateadd("d",-1,date)) ^&amp; Right("0" ^&amp; DatePart("m",dateadd("d",-1,date)),2) ^&amp; Right("0" ^&amp; DatePart("d",dateadd("d",-1,date)),2)&gt;vbs.vbs
+for /f %%a in ('cscript //nologo vbs.vbs') do del vbs.vbs&amp;&amp;set ld=%%a
+
+echo Date is: %year%-%mon%-%day%
+echo LastDate is: %ld%
+
+rem 删除头一天文件
+del /Q nc55-%ld:~0,4%-%ld:~4,2%-%ld:~6,2%.dmp*
+
+rem 复制文件
 echo coping z:\nc55-%year%-%mon%-%day%.dmp.gz ...
-copy z:\nc55-%year%-%mon%-%day%.dmp.gz %loc%</p>
-<p>rem 解压文件
+copy z:\nc55-%year%-%mon%-%day%.dmp.gz %loc%
+
+rem 解压文件
 echo unraring...
-%rar%winrar e %loc%nc55-%year%-%mon%-%day%.dmp.gz %loc%</p>
-<p>rem 生成sql1
+%rar%winrar e %loc%nc55-%year%-%mon%-%day%.dmp.gz %loc%
+
+rem 生成sql1
 echo create sql1 ...
 echo. &gt;%loc%1.sql
 echo create user nc%date:~2,2%%mon%%day% identified by 1;&gt;&gt;%loc%1.sql
 echo grant connect,dba to nc%date:~2,2%%mon%%day%;&gt;&gt;%loc%1.sql
-echo
+echo 
 grant read,write on directory dir_dp to nc%date:~2,2%%mon%%day%;&gt;&gt;%loc%1.sql
 echo commit;&gt;&gt;%loc%1.sql
-echo exit &gt;&gt;%loc%1.sql</p>
-<p>rem 生成sql2
+echo exit &gt;&gt;%loc%1.sql
+
+rem 生成sql2
 echo create sql2 ...
 echo. &gt;%loc%2.sql
 echo drop user nc%ld:~2,2%%ld:~4,2%%ld:~6,2% cascade;&gt;&gt;%loc%2.sql
-echo exit &gt;&gt;%loc%2.sql</p>
-<p>rem 停服务
+echo exit &gt;&gt;%loc%2.sql
+
+rem 停服务
 echo stop service
-taskkill /f /im java.exe</p>
-<p>rem 执行sql脚本
+taskkill /f /im java.exe
+
+rem 执行sql脚本
 running sqls
 sqlplus sys/sys@orcl2 as sysdba @%loc%1.sql
-sqlplus sys/sys@orcl2 as sysdba @%loc%2.sql</p>
-<p>rem 启动服务
+sqlplus sys/sys@orcl2 as sysdba @%loc%2.sql
+
+rem 启动服务
 echo start service
-start cmd /c &quot;D:\nchome1211\startup.bat&quot;</p>
-<p>rem 导入数据库备份
-impdp nc%date:~2,2%%mon%%day%/1@orcl2 directory=dir_dp dumpfile=nc55-%year%-%mon%-%day%.dmp logfile=nc55-%year%-%mon%-%day%.log remap_schema=nc55:nc%date:~2,2%%mon%%day%</p>
-<p>echo done
-exit</p>
-<pre><code></code></pre>
+start cmd /c "D:\nchome1211\startup.bat"
+
+rem 导入数据库备份
+impdp nc%date:~2,2%%mon%%day%/1@orcl2 directory=dir_dp dumpfile=nc55-%year%-%mon%-%day%.dmp logfile=nc55-%year%-%mon%-%day%.log remap_schema=nc55:nc%date:~2,2%%mon%%day%
+
+echo done
+exit</code></pre>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
