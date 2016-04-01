@@ -72,13 +72,11 @@ summary: 在WINDOWS服务器中执行自动拷贝数据库备份并恢复
 rem 取时间
 set year=%date:~0,4%
 set mon=%date:~5,2%
-set day=%date:~8,2%
-
-rem 路径变量
-set loc=E:\ora-bak\
-set rar="C:\Program Files (x86)\WinRAR\"
-
-rem 取头一天时间
+set day=%date:~8,2%</code></pre>
+<p>rem 路径变量
+set loc=E:\ora-bak<br />
+set rar=&quot;C:\Program Files (x86)\WinRAR\&quot;</p>
+<pre><code>rem 取头一天时间
 echo Wscript.echo DatePart("YYYY",dateadd("d",-1,date)) ^&amp; Right("0" ^&amp; DatePart("m",dateadd("d",-1,date)),2) ^&amp; Right("0" ^&amp; DatePart("d",dateadd("d",-1,date)),2)&gt;vbs.vbs
 for /f %%a in ('cscript //nologo vbs.vbs') do del vbs.vbs&amp;&amp;set ld=%%a
 
