@@ -69,33 +69,38 @@ summary: 在WINDOWS服务器中执行自动拷贝数据库备份并恢复
 <li>主要用于记录：</li>
 </ul>
 <pre><code>@echo off
+
 rem 取时间
 set year=%date:~0,4%
 set mon=%date:~5,2%
-set day=%date:~8,2%</code></pre>
-<p>rem 路径变量
-set loc=E:\ora-bak<br />
-set rar=&quot;C:\Program Files (x86)\WinRAR\&quot;</p>
-<pre><code>rem 取头一天时间
-echo Wscript.echo DatePart("YYYY",dateadd("d",-1,date)) ^&amp; Right("0" ^&amp; DatePart("m",dateadd("d",-1,date)),2) ^&amp; Right("0" ^&amp; DatePart("d",dateadd("d",-1,date)),2)&gt;vbs.vbs
-for /f %%a in ('cscript //nologo vbs.vbs') do del vbs.vbs&amp;&amp;set ld=%%a
+set day=%date:~8,2%
 
-echo Date is: %year%-%mon%-%day%
-echo LastDate is: %ld%
+rem 路径变量
+set loc=E:\ora-bak\
+set rar="C:\Program Files (x86)\WinRAR\"
+set z="\\10.100.100.2\admin\jiqun_orabak\"
+echo loc:%loc%
+
+rem 取头一天时间
+echo Wscript.echo DatePart("YYYY",dateadd("d",-1,date)) ^&amp; Right("0" ^&amp; DatePart("m",dateadd("d",-1,date)),2) ^&amp; Right("0" ^&amp; DatePart("d",dateadd("d",-1,date)),2) &gt;%loc%vbs.vbs
+for /f %%a in ('cscript //nologo %loc%vbs.vbs') do del %loc%vbs.vbs&amp;&amp;set ld=%%a
+
+echo Date is: %year%-%mon%-%day% &gt; %loc%imp.log
+echo LastDate is: %ld% &gt;&gt; %loc%imp.log
 
 rem 删除头一天文件
-del /Q nc55-%ld:~0,4%-%ld:~4,2%-%ld:~6,2%.dmp*
+del /Q %loc%nc55-%ld:~0,4%-%ld:~4,2%-%ld:~6,2%.dmp*
 
 rem 复制文件
-echo coping z:\nc55-%year%-%mon%-%day%.dmp.gz ...
-copy z:\nc55-%year%-%mon%-%day%.dmp.gz %loc%
+echo coping z:\nc55-%year%-%mon%-%day%.dmp.gz ... &gt;&gt; %loc%imp.log
+copy %z%nc55-%year%-%mon%-%day%.dmp.gz %loc%
 
 rem 解压文件
-echo unraring...
+echo unraring... &gt;&gt; %loc%imp.log
 %rar%winrar e %loc%nc55-%year%-%mon%-%day%.dmp.gz %loc%
 
 rem 生成sql1
-echo create sql1 ...
+echo create sql1 ... &gt;&gt;%loc%imp.log
 echo. &gt;%loc%1.sql
 echo create user nc%date:~2,2%%mon%%day% identified by 1;&gt;&gt;%loc%1.sql
 echo grant connect,dba to nc%date:~2,2%%mon%%day%;&gt;&gt;%loc%1.sql
@@ -105,28 +110,29 @@ echo commit;&gt;&gt;%loc%1.sql
 echo exit &gt;&gt;%loc%1.sql
 
 rem 生成sql2
-echo create sql2 ...
+echo create sql2 ... &gt;&gt;%loc%imp.log
 echo. &gt;%loc%2.sql
 echo drop user nc%ld:~2,2%%ld:~4,2%%ld:~6,2% cascade;&gt;&gt;%loc%2.sql
 echo exit &gt;&gt;%loc%2.sql
 
 rem 停服务
-echo stop service
+echo stop service &gt;&gt;%loc%imp.log
 taskkill /f /im java.exe
 
 rem 执行sql脚本
-running sqls
+echo running sqls &gt;&gt;%loc%imp.log
 sqlplus sys/sys@orcl2 as sysdba @%loc%1.sql
 sqlplus sys/sys@orcl2 as sysdba @%loc%2.sql
 
 rem 启动服务
-echo start service
+echo start service &gt;&gt;%loc%imp.log
 start cmd /c "D:\nchome1211\startup.bat"
 
 rem 导入数据库备份
+echo impdp database &gt;&gt;%loc%imp.log
 impdp nc%date:~2,2%%mon%%day%/1@orcl2 directory=dir_dp dumpfile=nc55-%year%-%mon%-%day%.dmp logfile=nc55-%year%-%mon%-%day%.log remap_schema=nc55:nc%date:~2,2%%mon%%day%
 
-echo done
+echo done &gt;&gt;%loc%imp.log
 exit</code></pre>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
@@ -200,8 +206,8 @@ exit</code></pre>
 </aside>	<aside class="widget widget_recent_entries sidebar-widget clearfix">
 	<h3 class="widget-title">近期文章</h3>
 	<ul>
-	    <li><a href="/blog/docker-use.html">docker的基本使用</a></li>
-        <li><a href="/blog/auto-imp.html">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></li>
+	    <li><a href="/blog/auto-imp.html">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></li>
+        <li><a href="/blog/docker-use.html">docker的基本使用</a></li>
         <li><a href="/blog/vi.html">VI命令快捷键</a></li>
         <li><a href="/blog/testDisk.html">用LINUX下的testDisk找回损坏硬盘的文件</a></li>
         <li><a href="/blog/entware-smb-extend.html">赚钱宝root后挂载共享盘或者NAS-赚钱宝折腾</a></li>
