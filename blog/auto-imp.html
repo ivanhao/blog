@@ -89,18 +89,19 @@ echo Date is: %year%-%mon%-%day% &gt; %loc%imp.log
 echo LastDate is: %ld% &gt;&gt; %loc%imp.log
 
 rem 删除头一天文件
+echo %date% -- deleting last file... &gt;&gt; %loc%imp.log
 del /Q %loc%nc55-%ld:~0,4%-%ld:~4,2%-%ld:~6,2%.dmp*
 
 rem 复制文件
-echo coping z:\nc55-%year%-%mon%-%day%.dmp.gz ... &gt;&gt; %loc%imp.log
+echo %date% -- coping z:\nc55-%year%-%mon%-%day%.dmp.gz ... &gt;&gt; %loc%imp.log
 copy %z%nc55-%year%-%mon%-%day%.dmp.gz %loc%
 
 rem 解压文件
-echo unraring... &gt;&gt; %loc%imp.log
+echo %date% -- unraring... &gt;&gt; %loc%imp.log
 %rar%winrar e %loc%nc55-%year%-%mon%-%day%.dmp.gz %loc%
 
 rem 生成sql1
-echo create sql1 ... &gt;&gt;%loc%imp.log
+echo %date% -- create sql1 ... &gt;&gt;%loc%imp.log
 echo. &gt;%loc%1.sql
 echo create user nc%date:~2,2%%mon%%day% identified by 1;&gt;&gt;%loc%1.sql
 echo grant connect,dba to nc%date:~2,2%%mon%%day%;&gt;&gt;%loc%1.sql
@@ -110,29 +111,29 @@ echo commit;&gt;&gt;%loc%1.sql
 echo exit &gt;&gt;%loc%1.sql
 
 rem 生成sql2
-echo create sql2 ... &gt;&gt;%loc%imp.log
+echo %date% -- create sql2 ... &gt;&gt;%loc%imp.log
 echo. &gt;%loc%2.sql
 echo drop user nc%ld:~2,2%%ld:~4,2%%ld:~6,2% cascade;&gt;&gt;%loc%2.sql
 echo exit &gt;&gt;%loc%2.sql
 
 rem 停服务
-echo stop service &gt;&gt;%loc%imp.log
+echo %date% -- stop service &gt;&gt;%loc%imp.log
 taskkill /f /im java.exe
 
 rem 执行sql脚本
-echo running sqls &gt;&gt;%loc%imp.log
+echo %date% -- running sqls &gt;&gt;%loc%imp.log
 sqlplus sys/sys@orcl2 as sysdba @%loc%1.sql
 sqlplus sys/sys@orcl2 as sysdba @%loc%2.sql
 
 rem 启动服务
-echo start service &gt;&gt;%loc%imp.log
+echo %date% -- start service &gt;&gt;%loc%imp.log
 start cmd /c "D:\nchome1211\startup.bat"
 
 rem 导入数据库备份
-echo impdp database &gt;&gt;%loc%imp.log
+echo %date% -- impdp database &gt;&gt;%loc%imp.log
 impdp nc%date:~2,2%%mon%%day%/1@orcl2 directory=dir_dp dumpfile=nc55-%year%-%mon%-%day%.dmp logfile=nc55-%year%-%mon%-%day%.log remap_schema=nc55:nc%date:~2,2%%mon%%day%
 
-echo done &gt;&gt;%loc%imp.log
+echo %date% -- done &gt;&gt;%loc%imp.log
 exit</code></pre>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
