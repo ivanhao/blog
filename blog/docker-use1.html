@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Ivan&#039;s Blog</title>
-	<meta name="keywords" content="markdown,Oracle,GitBlog,博客,Markdown博客,jockchou,Ivan&#039;s Blog">
-	<meta name="description" content="GitBlog是一个简单易用的Markdown博客系统">
+	<title>docker的基本使用1|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="docker,Ivan&#039;s Blog">
+	<meta name="description" content="docker的基本使用1">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -39,53 +39,86 @@
 	</div>
 </div>
 </header>		    <div id="content">
-					    	    	
-    	    		<div class="quest-row" id="title-container">
-	<div class="container title-container">
-		<div class="row">
-			<div class="col-md-6">
-								<h3>Oracle</h3>
-							</div>
-			<div class="col-md-6">
-				<ul class="breadcrumbs">
-					<li><a href="/">Home</a></li>
-										<li>Oracle</li>
-									</ul>
-				</div>
-		</div>
-	</div>
-</div>    		<div class="quest-row site-content">
+	<div class="quest-row site-content">
 		<div class="container">
 			<div class="row">
-				<div id="primary" class="content-area col-md-9">
+				<div id="primary" class="content-area single col-md-9">
 					<div id="main" class="site-main" role="main">
-																										        	<article class="post hentry">
+						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/first.html" rel="bookmark">我的第一篇MarkDown博客!</a></h1>
+	<h1 class="post-title"><a href="/blog/docker-use1.html" rel="bookmark">docker的基本使用1</a></h1>
 	<div class="entry-meta">
-		<time class="post-date"><i class="fa fa-clock-o"></i>2016-02-10</time>
+		<time class="post-date"><i class="fa fa-clock-o"></i>2016-06-04</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
-		<p>你好！GitBlog</p>
+		<!--
+author:ivan 
+date: 2016-06-04
+title: docker的基本使用1
+tags: docker
+category: docker
+status: publish
+summary: docker的基本使用1
+-->
+<hr />
+<ol>
+<li>容器配置-交互模式</li>
+</ol>
+<pre><code>sudo docker run -it 镜像名 /bin/bash</code></pre>
+<p>在交互模式里面可以改一下root的密码，方便后续运行时可以登陆进容器。</p>
+<ol>
+<li>提交所做的更改</li>
+</ol>
+<p>配置完后exit退出交互模式，然后通过如下方式查看刚刚配置的容器ID</p>
+<pre><code>sudo docker ps -l</code></pre>
+<p>找到第一列的CONTAINER ID，然后提交：</p>
+<pre><code>sudo docker commit 容器ID 镜像名</code></pre>
+<ol>
+<li>容器运行</li>
+</ol>
+<pre><code>sudo docker run -d -p 主机端口号1:容器内端口号1 -p 主机端口号2:容器内端口号2 镜像名 /usr/sbin/sshd -D</code></pre>
+<p>例如：容器里有nginx和mysql，端口分别是80和3306，需要映射到主机的8080和13306，当然既然运行了sshd，也需要把22端口映射出来，方便后续使用：</p>
+<pre><code>sudo docker run -d -p 8080:80 -p 13306:3306 -p 2022:22 镜像名 /usr/sbin/sshd -D</code></pre>
+<p>运行后会生成一个新的ID的容器，用<code>sudo docker ps</code>可以查看到。</p>
+<p>这个时候，nginx和mysql应该并没有启动，可以ssh进去启动：</p>
+<pre><code>ssh root@localhost -p 2022</code></pre>
+<p>未完待续....</p>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
-          <li><a href="/category/107260689.html" rel="category">GitBlog</a></li>
+          <li><a href="/category/1295647713.html" rel="category">docker</a></li>
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/107260689.html" rel="tag">GitBlog</a></li>
-                   <li><a href="/tags/474222454.html" rel="tag">markdown</a></li>
+                   <li><a href="/tags/1295647713.html" rel="tag">docker</a></li>
         	</ul>
 		
-		<div class="read-more">
-		<a href="/blog/first.html">阅读全文<i class="fa fa-angle-double-right "></i></a>
-	</div>
-	</footer><!-- .entry-footer --></article><!-- #post-## -->					        						        																		</div>
+	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
+	<div id="respond" class="comment-respond">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="696bfe80c68463e9e72a8cc3bd3ffc44" data-title="docker的基本使用1" data-url="//blog/docker-use1.html"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"ivanhao1984"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+        <!-- 多说公共JS代码 end -->
+	</div><!-- #respond -->
+</div>
+					</div>
 					<!-- #main -->
 				</div>
+				<!-- #primary -->
 				<div id="secondary" class="widget-area main-sidebar col-md-3" role="complementary">
 	<aside class="widget widget_text sidebar-widget clearfix">
 	<h3 class="widget-title">介绍</h3>
@@ -168,7 +201,7 @@
 		<!-- .container -->
 	</div>
 	<!-- .quest-row -->
-</div><!-- #content -->		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
+</div>		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 copyright-text">
