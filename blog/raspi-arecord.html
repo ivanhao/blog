@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>两个树莓派(或香蕉派)之间的音频直播测试|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="树莓派,香蕉派,Ivan&#039;s Blog">
+	<meta name="description" content="两个设备（树莓派或香蕉派）。一个设备做录音端，一个设备做播放端，通过网络的方式建立连接。">
+	
+	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
+	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
+<!--	<link rel="stylesheet" href="http://fonts.useso.com/css?family=Open+Sans:300,400,600&subset=latin,latin-ext">-->
+	<link rel="stylesheet" href="/theme/quest/css/style.css?ver=2.2" type="text/css" media="all" />
+	<link rel="stylesheet" href="/theme/quest/css/customizer.css?ver=2.2" type="text/css" media="all" />
+	<link rel="alternate" type="application/rss+xml" title="Ivan&#039;s Blog" href="//feed.xml" />
+	
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?555e31d6524985cd82ac348760cd7a50";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+	</head>
+
+<body class="home blog wide">
+	<div id="page" class="hfeed site">
+		<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+		    <header id="masthead" class="main-header" role="banner">
+<div class="container">
+	<div class="row">
+		<div class="site-branding col-md-4">
+			<h1 class="site-title"><a href="/" rel="home">Ivan&#039;s Blog</a></h1>
+				<span class="site-description">随手写，随手记</span>
+		</div>
+		<!-- .site-branding -->
+	</div>
+</div>
+</header>		    <div id="content">
+	<div class="quest-row site-content">
+		<div class="container">
+			<div class="row">
+				<div id="primary" class="content-area single col-md-9">
+					<div id="main" class="site-main" role="main">
+						<article class="post hentry">
+	<header class="entry-header">
+	<h1 class="post-title"><a href="/blog/raspi-arecord.html" rel="bookmark">两个树莓派(或香蕉派)之间的音频直播测试</a></h1>
+	<div class="entry-meta">
+		<time class="post-date"><i class="fa fa-clock-o"></i>2017-03-07</time>
+				<span class="seperator">/</span>
+	    <span><i class="fa fa-user"></i> ivan</span>
+	    	</div><!-- .entry-meta -->
+</header><!-- .entry-header -->	<div class="entry-content">
+		<!--
+author:ivan 
+date: 2017-03-07
+title: 两个树莓派(或香蕉派)之间的音频直播测试
+tags: 树莓派,香蕉派
+category: 树莓派
+status: publish
+summary: 两个设备（树莓派或香蕉派）。一个设备做录音端，一个设备做播放端，通过网络的方式建立连接。
+-->
+<hr />
+<h2 id="一、场景介绍及准备工作">一、场景介绍及准备工作</h2>
+<h5 id="1. 场景">1. 场景</h5>
+<blockquote>
+<ul>
+<li>一共两个设备（树莓派或香蕉派）。一个设备做录音端，一个设备做播放端，通过网络的方式建立连接。</li>
+<li>网络连接采用netcat的方式在录音端建立监听(arecord -D 'xxx(录音设备名)' |nc -l 8888)，在播放端连接上监听后播放（nc  xxx.xxx.xxx(ip地址) xxxx(端口) | aplay)。</li>
+<li>为了简化手工输入命令，用python来实现在一个设备来控制另外一个设备自动录音、播放。</li>
+</ul>
+</blockquote>
+<h5 id="2. 准备工作">2. 准备工作</h5>
+<ul>
+<li>两个设备（树莓派或香蕉派，我手上有一个树莓派一个香蕉派，香蕉派自带mic）、设备安装好系统（本场景中以debian为例）、网络环境（设备可以上网、两个设备可以互相访问）、2.5插头喇叭----这部分工作在本文不做介绍</li>
+<li>安装好声卡驱动、alsa工具、python-pip环境</li>
+</ul>
+<h2 id="二、步骤说明">二、步骤说明</h2>
+<h5 id="1、安装alsa-utils">1、安装alsa-utils</h5>
+<p>在终端中输入：</p>
+<pre><code>sudo apt-get install alsa-utils</code></pre>
+<p>安装完成后输入<code>aplay -l</code>来查看当前的声卡设备，输入<code>arecord -l</code>来查看当前的录音设备。</p>
+<ul>
+<li>声卡播放设备
+树莓派上如果显示不出播放设备，应该是没有把声音模块加入内核，需要输入：
+<pre><code>sudo modprobe snd-bcm2835 #把声音模块加入内核</code></pre>
+<ul>
+<li>录音设备
+树莓派不自带mic的需要插入外置录音设备，香蕉派自带mic就能直接看到录音设备了</li>
+</ul></li>
+</ul>
+<h5 id="2. 测试单设备和录音和播放">2. 测试单设备和录音和播放</h5>
+<ul>
+<li>单录音(例：<code>arecord -l</code>中看到的是<code>plughw:1,0</code>  其他参数自行查用法)
+<pre><code>arecord -D plughw:1,0 -t wav -f cd -r 8000 ./test.wav</code></pre>
+<p>在当前目录录音生成test.wav</p></li>
+<li>单播放
+<pre><code>aplay ./test.wav</code></pre></li>
+<li>边录边播
+<pre><code>arecord -D plughw:1,0 -t wav -f cd -r 8000 | aplay</code></pre>
+<p>得到期望的结果为录音和播放正常。</p></li>
+</ul>
+<h5 id="3.测试一个设备录音，另一个设备播放">3.测试一个设备录音，另一个设备播放</h5>
+<p>输入<code>nc -h</code>看一下系统中是否已安装netcat，如果未安装，通过<code>sudo apt-get install netcat</code>进行安装。</p>
+<blockquote>
+<p>这里两台设备的ip分别为：</p>
+<ul>
+<li>A设备：192.168.199.101</li>
+<li>B设备：192.168.199.102</li>
+</ul>
+</blockquote>
+<ul>
+<li>在A设备录音：
+<pre><code>arecord -D plughw:1,0 -t wav -f cd -r 8000 | nc -l 8888</code></pre></li>
+<li>在B设备播放：
+<pre><code>nc 192.168.199.102 8888 | aplay</code></pre>
+<p>得到期望的结果为在B设备能听到A设备的录音。</p></li>
+</ul>
+<h5 id="4. 自动化控制">4. 自动化控制</h5>
+<p>只在一个设备里控制另一个设备进行录音或者播放。
+这里用python的paramiko库来实现这个测试。</p>
+<ul>
+<li>首先安装pip：
+<pre><code>sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+sudo easy_install pip</code></pre></li>
+<li>通过pip安装paramiko:
+<pre><code>sudo pip install paramiko</code></pre></li>
+<li>写python控制程序：</li>
+</ul>
+<blockquote>
+<ul>
+<li>实现A设备控制B设备录音，并在A设备中播放 (测试成功):</li>
+</ul>
+</blockquote>
+<pre><code>#!/bin/python
+# -*- coding: utf-8 -*-
+import paramiko
+
+#B端的IP
+ip='192.168.199.102'
+port = 22
+username = '用户名'
+password = '密码'
+
+#B端
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect(ip, port,username, password)
+cmd='arecord -t wav -f cd -r 8000 | nc -l 8888'
+stdin, stdout, stderr = ssh.exec_command(cmd)
+
+#A端
+os.system('nc 192.168.1.102 8888|aplay')
+
+ssh.close()</code></pre>
+<blockquote>
+<ul>
+<li>实现A设备控制 B设备录音，并在A设备中播放，同时A设备录音在B设备中播放。（手头的设备有一个没有mic未实际测试）:</li>
+</ul>
+</blockquote>
+<pre><code>#!/bin/python
+# -*- coding: utf-8 -*-
+import paramiko
+
+#B端的IP
+ip='192.168.1.102'
+port = 22
+username = '用户名'
+password = '密码'
+
+#B端
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect(ip, port,username, password)
+cmd='arecord -t wav -f cd -r 8000 | nc -l 8888'
+stdin, stdout, stderr = ssh.exec_command(cmd)
+
+#A端
+os.system('nc 192.168.1.102 8888|aplay')
+
+#A端
+os.system('arecord -t wav -f cd -r 8000  | nc -l 9999')
+
+#B端
+cmd='nc 192.168.1.101 9999 |aplay'
+stdin, stdout, stderr = ssh.exec_command(cmd)
+
+ssh.close()</code></pre>
+<blockquote>
+<p><code>arecord -f cd -D "plughw:1" -d 10 | ssh yanisyu@192.168.1.102 aplay -f cd</code> 理论上这种方式也可行</p>
+</blockquote>
+	</div><!-- .entry-content -->	<footer class="entry-footer">
+		<ul class="post-categories">
+          
+          <li><a href="/category/1756854552.html" rel="category">树莓派</a></li>
+        	</ul>
+		
+		<ul class="post-tags">
+                   <li><a href="/tags/1756854552.html" rel="tag">树莓派</a></li>
+                   <li><a href="/tags/325520242.html" rel="tag">香蕉派</a></li>
+        	</ul>
+		
+	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
+	<div id="respond" class="comment-respond">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="d221b1e84b3115e961731806babd06fc" data-title="两个树莓派(或香蕉派)之间的音频直播测试" data-url="//blog/raspi-arecord.html"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"ivanhao1984"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+        <!-- 多说公共JS代码 end -->
+	</div><!-- #respond -->
+</div>
+					</div>
+					<!-- #main -->
+				</div>
+				<!-- #primary -->
+				<div id="secondary" class="widget-area main-sidebar col-md-3" role="complementary">
+	<aside class="widget widget_text sidebar-widget clearfix">
+	<h3 class="widget-title">介绍</h3>
+	<div class="textwidget">
+		<p>本博客使用Gitblog搭建，欢迎你!</p>
+	</div>
+</aside>
+	<aside class="widget widget_search sidebar-widget clearfix">
+	<h3 class="widget-title">搜索</h3>
+	<form class="search" action="/search" method="get">
+		<fieldset>
+			<div class="text">
+				<input name="keyword" id="keyword" type="text" placeholder="Search ..."/>
+				<button class="fa fa-search">Search</button>
+			</div>
+		</fieldset>
+	</form>
+</aside>	<aside class="widget widget_categories sidebar-widget clearfix">
+	<h3 class="widget-title">分类目录</h3>
+	<ul>
+		        <li class="cat-item"><a href="/category/107260689.html" >GitBlog</a></li>
+                <li class="cat-item"><a href="/category/534749761.html" >赚钱宝折腾</a></li>
+                <li class="cat-item"><a href="/category/1087743293.html" >bat</a></li>
+                <li class="cat-item"><a href="/category/1295647713.html" >docker</a></li>
+                <li class="cat-item"><a href="/category/1752954334.html" >Linux</a></li>
+                <li class="cat-item"><a href="/category/1756854552.html" >树莓派</a></li>
+                <li class="cat-item"><a href="/category/1049233538.html" >Oracle</a></li>
+        	</ul>
+</aside>
+	<aside class="widget widget_archive sidebar-widget clearfix">
+	<h3 class="widget-title">文章归档</h3>
+	<ul>
+		<li><a href="/archive/201703.html">2017-03</a></li>
+		<li><a href="/archive/201603.html">2016-03</a></li>
+		<li><a href="/archive/201606.html">2016-06</a></li>
+		<li><a href="/archive/201604.html">2016-04</a></li>
+		<li><a href="/archive/201602.html">2016-02</a></li>
+		</ul>
+</aside>	<aside class="widget widget_recent_entries sidebar-widget clearfix">
+	<h3 class="widget-title">近期文章</h3>
+	<ul>
+	    <li><a href="/blog/raspi-arecord.html">两个树莓派(或香蕉派)之间的音频直播测试</a></li>
+        <li><a href="/blog/linux-use1.html">linux的常用命令1</a></li>
+        <li><a href="/blog/docker-use1.html">docker的基本使用1</a></li>
+        <li><a href="/blog/bat-delay.html">在WINDOWS服务器中BAT批处理延迟处理</a></li>
+        <li><a href="/blog/auto-imp.html">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></li>
+    	</ul>
+</aside>
+	<aside class="widget widget_tag_cloud sidebar-widget clearfix">
+	<h3 class="widget-title">标签</h3>
+	<div class="tagcloud">
+		<a href="/tags/1141897447.html"  title="Git" >Git</a>
+		<a href="/tags/1623543441.html"  title="百度云" >百度云</a>
+		<a href="/tags/160680135.html"  title="bypy" >bypy</a>
+		<a href="/tags/2057163754.html"  title="赚钱宝" >赚钱宝</a>
+		<a href="/tags/1087743293.html"  title="bat" >bat</a>
+		<a href="/tags/107260689.html"  title="GitBlog" >GitBlog</a>
+		<a href="/tags/474222454.html"  title="markdown" >markdown</a>
+		<a href="/tags/1295647713.html"  title="docker" >docker</a>
+		<a href="/tags/1334748759.html"  title="ssh" >ssh</a>
+		<a href="/tags/2146007892.html"  title="samba" >samba</a>
+		<a href="/tags/235837707.html"  title="entware" >entware</a>
+		<a href="/tags/1608014486.html"  title="vi" >vi</a>
+		<a href="/tags/1155787600.html"  title="linux" >linux</a>
+		<a href="/tags/1752954334.html"  title="Linux" >Linux</a>
+		<a href="/tags/1756854552.html"  title="树莓派" >树莓派</a>
+		<a href="/tags/325520242.html"  title="香蕉派" >香蕉派</a>
+		<a href="/tags/14240036.html"  title="daocloud" >daocloud</a>
+		<a href="/tags/1049233538.html"  title="Oracle" >Oracle</a>
+		<a href="/tags/291472963.html"  title="testDisk" >testDisk</a>
+		<a href="/tags/595516469.html"  title="数据恢复" >数据恢复</a>
+		<a href="/tags/1029963234.html"  title="gitblog" >gitblog</a>
+		<a href="/tags/547641708.html"  title="github" >github</a>
+		<a href="/tags/1330596651.html"  title="pages" >pages</a>
+		<a href="/tags/1317682471.html"  title="xware" >xware</a>
+		<a href="/tags/1115655607.html"  title="迅雷远程" >迅雷远程</a>
+		</div>
+</aside>
+</div><!-- #secondary -->
+			</div>
+			<!-- .row -->
+		</div>
+		<!-- .container -->
+	</div>
+	<!-- .quest-row -->
+</div>		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 copyright-text">
+				<a href="https://github.com/jockchou/gitblog">Proudly powered by Gitblog</a>
+			</div>
+			<div class="col-md-6 social-icon-container clearfix">
+				<ul></ul>
+			</div>
+		</div>
+		<!-- end row -->
+	</div>
+	<!-- end container -->
+</footer>	</div><!-- #page -->
+	<a href="#0" class="cd-top"><i class="fa fa-angle-up"></i></a>
+
+
+<script type="text/javascript" src="/theme/quest/assets/plugins/modernizr/modernizr.custom.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/js/jquery/jquery.js?ver=1.11.2"></script>
+<script type="text/javascript" src="/theme/quest/js/jquery/jquery-migrate.min.js?ver=1.2.1"></script>
+<script type="text/javascript" src="/theme/quest/assets/plugins/bootstrap/js/bootstrap.min.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/assets/plugins/wow/wow.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/assets/plugins/colorbox/jquery.colorbox-min.js?ver=2.2"></script>
+<script type="text/javascript" src="/theme/quest/assets/js/quest.js?ver=2.2"></script>
+	
+<link rel="stylesheet" href="http://cdn.bootcss.com/highlight.js/8.6/styles/default.min.css">
+<script src="http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>
