@@ -107,15 +107,15 @@ summary: 两个设备（树莓派或香蕉派）。一个设备做录音端，�
 <blockquote>
 <p>这里两台设备的ip分别为：</p>
 <ul>
-<li>A设备：192.168.199.101</li>
-<li>B设备：192.168.199.102</li>
+<li>A设备：192.168.1.101</li>
+<li>B设备：192.168.1.102</li>
 </ul>
 </blockquote>
 <ul>
 <li>在A设备录音：
 <pre><code>arecord -D plughw:1,0 -t wav -f cd -r 8000 | nc -l 8888</code></pre></li>
 <li>在B设备播放：
-<pre><code>nc 192.168.199.102 8888 | aplay</code></pre>
+<pre><code>nc 192.168.1.102 8888 | aplay</code></pre>
 <p>得到期望的结果为在B设备能听到A设备的录音。</p></li>
 </ul>
 <h5 id="4. 自动化控制">4. 自动化控制</h5>
@@ -139,7 +139,7 @@ sudo easy_install pip</code></pre></li>
 import paramiko
 
 #B端的IP
-ip='192.168.199.102'
+ip='192.168.1.102'
 port = 22
 username = '用户名'
 password = '密码'
