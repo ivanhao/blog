@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Ivan&#039;s Blog</title>
-	<meta name="keywords" content="Oracle,GitBlog,博客,Markdown博客,jockchou,Ivan&#039;s Blog">
-	<meta name="description" content="GitBlog是一个简单易用的Markdown博客系统">
+	<title>树莓派语音闹钟|Ivan&#039;s Blog</title>
+	<meta name="keywords" content="树莓派,语音闹钟,Ivan&#039;s Blog">
+	<meta name="description" content="linux下vi命令的快捷键大全">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -39,53 +39,105 @@
 	</div>
 </div>
 </header>		    <div id="content">
-					    	    	
-    	    		<div class="quest-row" id="title-container">
-	<div class="container title-container">
-		<div class="row">
-			<div class="col-md-6">
-								<h3>Oracle</h3>
-							</div>
-			<div class="col-md-6">
-				<ul class="breadcrumbs">
-					<li><a href="/">Home</a></li>
-										<li>Oracle</li>
-									</ul>
-				</div>
-		</div>
-	</div>
-</div>    		<div class="quest-row site-content">
+	<div class="quest-row site-content">
 		<div class="container">
 			<div class="row">
-				<div id="primary" class="content-area col-md-9">
+				<div id="primary" class="content-area single col-md-9">
 					<div id="main" class="site-main" role="main">
-																										        	<article class="post hentry">
+						<article class="post hentry">
 	<header class="entry-header">
-	<h1 class="post-title"><a href="/blog/auto-imp.html" rel="bookmark">在WINDOWS服务器中执行自动拷贝数据库备份并恢复</a></h1>
+	<h1 class="post-title"><a href="/blog/soundmemo.html" rel="bookmark">树莓派语音闹钟</a></h1>
 	<div class="entry-meta">
-		<time class="post-date"><i class="fa fa-clock-o"></i>2016-04-01</time>
+		<time class="post-date"><i class="fa fa-clock-o"></i>2017-09-26</time>
 				<span class="seperator">/</span>
 	    <span><i class="fa fa-user"></i> ivan</span>
 	    	</div><!-- .entry-meta -->
 </header><!-- .entry-header -->	<div class="entry-content">
-		<p>在WINDOWS服务器中执行自动拷贝数据库备份并恢复</p>
+		<!--
+author:ivan 
+date: 2017-09-26
+title: 树莓派语音闹钟
+tags: 树莓派,语音闹钟
+category: 树莓派
+status: publish
+summary: linux下vi命令的快捷键大全
+--> 由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~
+***
+####导语：
+> 由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~
+****
+#一、思路
+由于录音设备手机最方便，所以用手机来录音，然后录音文件导出到树莓派进行播放，由于手机上的语音格式可能无法直接播放，预计要转格式。播放正常后树莓派定时播放。
+#二、用料
+1. 硬用料：iphone（手上没安卓机）、树莓派、一台电脑
+2. 软用料：iphone的语音备忘录、树莓派的play、crontab、电脑的sftp
+#三、步骤
+1. 手机上录真人语音
+![App](//upload-images.jianshu.io/upload_images/4171480-a63605bf0ed8e5d1.jpg)
+2. 导出语音文件
+这个就简单了，iphone的语音备忘录录一下，导出：
+![导出](//upload-images.jianshu.io/upload_images/4171480-6305123df1a2d8d0.jpg)
+![选择导出方式](//upload-images.jianshu.io/upload_images/4171480-0b4e79a9c0b1fd49.jpg)
+选择QQ或者邮件等任何可以在电脑上接收到的方式。导出的格式为m4a。
+3. 上传到树莓派
+电脑上用sftp工具，例如putty或者filezilla在电脑上把m4a文件上传到树莓派，例如路径为`/home/pi`
+4. 语音文件转wav并播放测试
+- 安装需要的包：
+ *需要用到play：*
+ ```
+# sudo apt-get install play
+ ``` 
+ - 树莓派中转换音频格式：
+ ```
+# cd /home/pi  //这里是进入你m4a文件的目录，如果上传的是其他目录则按实际目录
+# ffmpeg -i xxx.m4a -f wav xxx.wav
+```
+- 播放测试：
+```
+# aplay xxx.wav
+```
+如果没有意外，会听到自己录的声音了。
+5. 树莓派定时播放
+用`crontab -e`进入定时任务编辑界面，最末添加：
+```
+* * * * * `aplay /home/pi/xxx.wav`
+```
+ 前面5个星号分别为：分、时、日、月、周，可以按需要进行设置，具体用法问度娘。
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
-          <li><a href="/category/1049233538.html" rel="category">Oracle</a></li>
+          <li><a href="/category/1756854552.html" rel="category">树莓派</a></li>
         	</ul>
 		
 		<ul class="post-tags">
-                   <li><a href="/tags/1049233538.html" rel="tag">Oracle</a></li>
-                   <li><a href="/tags/1087743293.html" rel="tag">bat</a></li>
+                   <li><a href="/tags/1756854552.html" rel="tag">树莓派</a></li>
+                   <li><a href="/tags/24836217.html" rel="tag">语音闹钟</a></li>
         	</ul>
 		
-		<div class="read-more">
-		<a href="/blog/auto-imp.html">阅读全文<i class="fa fa-angle-double-right "></i></a>
-	</div>
-	</footer><!-- .entry-footer --></article><!-- #post-## -->					        						        																		</div>
+	</footer><!-- .entry-footer --></article><!-- #post-## -->            			<div id="comments" class="clearfix">
+	<div id="respond" class="comment-respond">
+		<!-- 多说评论框 start -->
+		<div class="ds-thread" data-thread-key="0d531c4e4cb555018f6faed7532c7b03" data-title="树莓派语音闹钟" data-url="//blog/soundmemo.html"></div>
+		<!-- 多说评论框 end -->
+		<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+		<script type="text/javascript">
+		var duoshuoQuery = {short_name:"ivanhao1984"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+		</script>
+        <!-- 多说公共JS代码 end -->
+	</div><!-- #respond -->
+</div>
+					</div>
 					<!-- #main -->
 				</div>
+				<!-- #primary -->
 				<div id="secondary" class="widget-area main-sidebar col-md-3" role="complementary">
 	<aside class="widget widget_text sidebar-widget clearfix">
 	<h3 class="widget-title">介绍</h3>
@@ -173,7 +225,7 @@
 		<!-- .container -->
 	</div>
 	<!-- .quest-row -->
-</div><!-- #content -->		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
+</div>		    <footer id="colophon" class="copyright quest-row" role="contentinfo">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 copyright-text">
