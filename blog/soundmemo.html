@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>树莓派语音闹钟|Ivan&#039;s Blog</title>
 	<meta name="keywords" content="树莓派,语音闹钟,Ivan&#039;s Blog">
-	<meta name="description" content="linux下vi命令的快捷键大全">
+	<meta name="description" content="由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~">
 	
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/bootstrap/css/bootstrap.min.css?ver=2.2" type="text/css" media="all" />
 	<link rel="stylesheet" href="/theme/quest/assets/plugins/font-awesome/css/font-awesome.min.css?ver=2.2" type="text/css" media="all" />
@@ -60,49 +60,57 @@ title: 树莓派语音闹钟
 tags: 树莓派,语音闹钟
 category: 树莓派
 status: publish
-summary: linux下vi命令的快捷键大全
---> 由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~
-***
-####导语：
-> 由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~
-****
-#一、思路
-由于录音设备手机最方便，所以用手机来录音，然后录音文件导出到树莓派进行播放，由于手机上的语音格式可能无法直接播放，预计要转格式。播放正常后树莓派定时播放。
-#二、用料
-1. 硬用料：iphone（手上没安卓机）、树莓派、一台电脑
-2. 软用料：iphone的语音备忘录、树莓派的play、crontab、电脑的sftp
-#三、步骤
-1. 手机上录真人语音
-![App](//upload-images.jianshu.io/upload_images/4171480-a63605bf0ed8e5d1.jpg)
-2. 导出语音文件
+summary: 由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~
+-->
+<hr />
+<h4 id="导语：">导语：</h4>
+<blockquote>
+<p>由于家里的树莓派是24小时开机的，也连着音箱，于是想弄个真人语音闹钟提醒。虽然手机上也有闹钟功能，而且很方便，但是自定义铃声也只能选到歌曲，不支持把语音备忘录直接变成闹钟铃声。可能有相关的APP有类似的功能，不过我还是用树莓派来做了一个，毕竟咱们是有geek精神的^_~</p>
+<hr />
+<h1 id="一、思路">一、思路</h1>
+<p>由于录音设备手机最方便，所以用手机来录音，然后录音文件导出到树莓派进行播放，由于手机上的语音格式可能无法直接播放，预计要转格式。播放正常后树莓派定时播放。</p>
+</blockquote>
+<h1 id="二、用料">二、用料</h1>
+<ol>
+<li>硬用料：iphone（手上没安卓机）、树莓派、一台电脑</li>
+<li>软用料：iphone的语音备忘录、树莓派的play、crontab、电脑的sftp</li>
+</ol>
+<h1 id="三、步骤">三、步骤</h1>
+<ol>
+<li>
+<p>手机上录真人语音
+<img src="//upload-images.jianshu.io/upload_images/4171480-a63605bf0ed8e5d1.jpg" alt="App" /></p>
+</li>
+<li>导出语音文件
 这个就简单了，iphone的语音备忘录录一下，导出：
-![导出](//upload-images.jianshu.io/upload_images/4171480-6305123df1a2d8d0.jpg)
-![选择导出方式](//upload-images.jianshu.io/upload_images/4171480-0b4e79a9c0b1fd49.jpg)
-选择QQ或者邮件等任何可以在电脑上接收到的方式。导出的格式为m4a。
-3. 上传到树莓派
-电脑上用sftp工具，例如putty或者filezilla在电脑上把m4a文件上传到树莓派，例如路径为`/home/pi`
-4. 语音文件转wav并播放测试
-- 安装需要的包：
- *需要用到play：*
- ```
-# sudo apt-get install play
- ``` 
- - 树莓派中转换音频格式：
- ```
-# cd /home/pi  //这里是进入你m4a文件的目录，如果上传的是其他目录则按实际目录
-# ffmpeg -i xxx.m4a -f wav xxx.wav
-```
-- 播放测试：
-```
-# aplay xxx.wav
-```
-如果没有意外，会听到自己录的声音了。
-5. 树莓派定时播放
-用`crontab -e`进入定时任务编辑界面，最末添加：
-```
-* * * * * `aplay /home/pi/xxx.wav`
-```
- 前面5个星号分别为：分、时、日、月、周，可以按需要进行设置，具体用法问度娘。
+<img src="//upload-images.jianshu.io/upload_images/4171480-6305123df1a2d8d0.jpg" alt="导出" /></li>
+</ol>
+<p><img src="//upload-images.jianshu.io/upload_images/4171480-0b4e79a9c0b1fd49.jpg" alt="选择导出方式" />
+选择QQ或者邮件等任何可以在电脑上接收到的方式。导出的格式为m4a。</p>
+<ol>
+<li>
+<p>上传到树莓派
+电脑上用sftp工具，例如putty或者filezilla在电脑上把m4a文件上传到树莓派，例如路径为<code>/home/pi</code></p>
+</li>
+<li>
+<p>语音文件转wav并播放测试</p>
+<ul>
+<li>安装需要的包：
+<em>需要用到play：</em>
+<pre><code># sudo apt-get install play</code></pre></li>
+<li>树莓派中转换音频格式：
+<pre><code># cd /home/pi  //这里是进入你m4a文件的目录，如果上传的是其他目录则按实际目录
+# ffmpeg -i xxx.m4a -f wav xxx.wav</code></pre></li>
+<li>播放测试：
+<pre><code># aplay xxx.wav</code></pre>
+<p>如果没有意外，会听到自己录的声音了。</p></li>
+</ul>
+</li>
+<li>树莓派定时播放
+用<code>crontab -e</code>进入定时任务编辑界面，最末添加：
+<pre><code>* * * * * `aplay /home/pi/xxx.wav`</code></pre>
+<p>前面5个星号分别为：分、时、日、月、周，可以按需要进行设置，具体用法问度娘。</p></li>
+</ol>
 	</div><!-- .entry-content -->	<footer class="entry-footer">
 		<ul class="post-categories">
           
