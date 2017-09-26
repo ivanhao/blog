@@ -96,8 +96,8 @@ summary: 由于家里的树莓派是24小时开机的，也连着音箱，于是
 <p>语音文件转wav并播放测试</p>
 <ul>
 <li>安装需要的包：
-<em>需要用到play：</em>
-<pre><code># sudo apt-get install play</code></pre></li>
+<em>需要用到aplay、ffmpeg：</em>
+<pre><code># sudo apt-get install aplay ffmpeg</code></pre></li>
 <li>树莓派中转换音频格式：
 <pre><code># cd /home/pi  //这里是进入你m4a文件的目录，如果上传的是其他目录则按实际目录
 # ffmpeg -i xxx.m4a -f wav xxx.wav</code></pre></li>
